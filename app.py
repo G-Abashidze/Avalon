@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
+import pandas as pd
+import json
 import psycopg2
 from psycopg2 import sql
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
+
+
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", 'supersecretkey')
@@ -95,8 +99,10 @@ def login():
                 flash("Incorrect password. Please try again.", 'error')
         else:
             flash("Username not found. Please register first.", 'error')
-
+    session["activeSessions"] = pd.read_sql("select * from avalonsessions", get_db_connection()).to_json()
+    
     return render_template('login.html')
+
 
 
 @app.route('/home')
@@ -110,9 +116,14 @@ def home():
     with conn.cursor() as cur:
         cur.execute("SELECT SessionName FROM AvalonSessions")
         sessions = cur.fetchall()  # Fetch all results
+        
 
     conn.close()
     username = session['username']
+    
+    
+
+
     return render_template('home.html', username=username)  # Pass the username to the template
 
 

@@ -129,7 +129,7 @@
             <h2>Active Sessions</h2>
             <ul class="session-list">
                 <!-- Loop through sessions and create list items -->
-                {% for session in sessions %}
+                {% for session in sessions.activeSessions.sessionname %}
                     <li>{{ session[0] }}</li> <!-- session[0] is the SessionName -->
                 {% endfor %}
             </ul>
